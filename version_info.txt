@@ -1,0 +1,18 @@
+# Metadatos del .exe (los que muestra Windows en Configuración > Aplicaciones > Inicio)
+VSVersionInfo(
+  ffi=FixedFileInfo(filevers=(1, 0, 0, 0), prodvers=(1, 0, 0, 0)),
+  kids=[
+    StringFileInfo([
+      StringTable('040904B0', [
+        StringStruct('CompanyName', 'Leonardo-Ez'),
+        StringStruct('FileDescription', 'Spotify Taskbar Widget'),
+        StringStruct('FileVersion', '1.0.0'),
+        StringStruct('InternalName', 'SpotifyWidget'),
+        StringStruct('OriginalFilename', 'SpotifyWidget.exe'),
+        StringStruct('ProductName', 'Spotify Taskbar Widget'),
+        StringStruct('ProductVersion', '1.0.0'),
+      ])
+    ]),
+    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+  ]
+)

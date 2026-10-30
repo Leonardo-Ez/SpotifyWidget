@@ -24,8 +24,8 @@ import winreg
 from ctypes import wintypes
 
 from PySide6.QtCore import QObject, QPoint, QRectF, Qt, QTimer, Signal
-from PySide6.QtGui import (QAction, QColor, QFont, QFontMetrics, QGuiApplication,
-                           QImage, QPainter, QPainterPath, QPixmap, QWindow)
+from PySide6.QtGui import (QAction, QColor, QFont, QFontMetrics, QGuiApplication, QIcon,
+                           QImage, QPainter, QPainterPath, QPalette, QPixmap, QWindow)
 from PySide6.QtWidgets import QApplication, QMenu, QWidget
 
 from winrt.windows.media.control import (
@@ -72,10 +72,29 @@ def system_uses_light_theme() -> bool:
         return False
 
 
+def fluent_icon(glyph: str, color: QColor, dpr: float, size: int = 16) -> QIcon:
+    """Icono de la fuente Segoe Fluent Icons (la que usa Windows 11 en sus menús)."""
+    pix = QPixmap(int(size * dpr), int(size * dpr))
+    pix.setDevicePixelRatio(dpr)
+    pix.fill(Qt.transparent)
+    p = QPainter(pix)
+    p.setRenderHint(QPainter.TextAntialiasing)
+    font = QFont("Segoe Fluent Icons")
+    font.setPixelSize(size - 4)
+    p.setFont(font)
+    p.setPen(color)
+    p.drawText(QRectF(0, 0, size, size), Qt.AlignCenter, glyph)
+    p.end()
+    return QIcon(pix)
+
+
 def restart_self():
     """Explorer se reinició y se llevó la barra: relanzar el widget desde cero."""
     kernel32.CloseHandle(single_instance_mutex)
-    subprocess.Popen([sys.executable] + sys.argv)
+    if getattr(sys, "frozen", False):   # compilado con PyInstaller: el .exe es el programa
+        subprocess.Popen([sys.executable] + sys.argv[1:])
+    else:
+        subprocess.Popen([sys.executable] + sys.argv)
     os._exit(0)
 
 
@@ -337,8 +356,12 @@ class NowPlayingWidget(QWidget):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        menu.addAction(QAction("⏮  Anterior", menu, triggered=self.media.previous))
-        menu.addAction(QAction("⏭  Siguiente", menu, triggered=self.media.next))
+        color = menu.palette().color(QPalette.WindowText)
+        dpr = self.devicePixelRatioF()
+        menu.addAction(QAction(fluent_icon("", color, dpr), "Anterior", menu,
+                               triggered=self.media.previous))
+        menu.addAction(QAction(fluent_icon("", color, dpr), "Siguiente", menu,
+                               triggered=self.media.next))
         menu.addSeparator()
         menu.addAction(QAction("Abrir Spotify", menu,
                                triggered=lambda: ctypes.windll.shell32.ShellExecuteW(

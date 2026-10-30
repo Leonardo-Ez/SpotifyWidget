@@ -27,6 +27,15 @@ python -m venv .venv
 
 Ejecuta `iniciar.bat` (abre el widget sin ventana de consola). Aparece cuando Spotify está reproduciendo y se oculta cuando no hay nada sonando.
 
+## Compilar como programa (.exe)
+
+```bash
+.venv\Scripts\python.exe -m pip install pyinstaller
+build.bat
+```
+
+Genera `dist\SpotifyWidget\SpotifyWidget.exe`. Para que arranque con Windows, crea un acceso directo al `.exe` en la carpeta de inicio (`Win + R` → `shell:startup`); después se puede activar o desactivar en *Configuración → Aplicaciones → Inicio*.
+
 ## Configuración
 
 Al inicio de `widget.py`:
